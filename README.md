@@ -14,7 +14,9 @@ Other RISC-V toolchains may work but they have not been tested.
 The CV32E40P is currently undergoing verification in preparation for tape-out.
 Part of this verification process is exercising a Verilator model of the processor.
 This Verilator model can be initialized with an arbitrary hex file loaded into memory. 
-This model is used to run the example programs.  
+This model is used to run the example programs.
+
+To increase the speed of the model go to the file `./core-v-verif/cv32/tb/core/tb_top_verilator.cpp` and remove the call to `dump_memory();` in `main()`. This will stop the simulator dumping its memory before it has run any code, dramatically reducing the time needed to start the simulation. 
 
 Run the commands below to generate the Verilator model of the CV32E40P.
 
