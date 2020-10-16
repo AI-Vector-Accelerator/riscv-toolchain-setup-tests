@@ -58,7 +58,7 @@ When this linker script is not used GCC makes incorrect assumptions about where 
 
 ### Usage 
 Below is an example taken from the core-v-verif repo of how the above files should be used during the build process:  
-```
+```sh
 gcc test-program.o extra1.o extra2.o \
      -nostartfiles -T/path/to/link/link.ld -L/path/to/cv-verif/ -lcv-verif
 ```
