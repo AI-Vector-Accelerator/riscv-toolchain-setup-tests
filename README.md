@@ -33,3 +33,51 @@ echo export PATH=$PATH:$CV32SIM >> ~/.profile
 
 ## Running the Programs
 The test programs are stored in sub-directories. To run a program navigate to its sub-directory and call `make all` to build the hex file of the program and run it on the Verilog model. 
+
+## Build System 
+The build system used in these example programs is the same as is used to compile the test programs in the core-v-verif repo. 
+Details on this build system can be found here:
+https://github.com/openhwgroup/core-v-verif/tree/master/cv32/bsp#building-and-using-the-bsp-library
+
+In each program sub-directory there is a lib directory.
+This directory contains the files `libcv-verif.a` and `link.ld`.
+
+### libcv-verif.a
+This archive file contains bare-metal implementations of essential functions usually provided by the OS. 
+It includes a port of the C Runtime (crt0.S), a port of syscalls that does not rely on an OS, an interrupt system, and a vector table.  
+
+The syscall port is pretty bare-bones, the lack of an OS means the best many of the syscall functions can do is fail gracefully (e.g: file handling). 
+Initial experimentation showed that the toolchain can sometimes try to add two different versions of syscalls if standard C functions are called from libraries other than stdio.h or stdlib.h, e.g: time.h.
+
+TODO: Investigate recompiling `libcv-verif.a` without the proprietary syscalls and letting GCC link in the default version. 
+
+### link.ld
+This is the linker script used to arrange the sections correctly in the ELF and HEX files produced at the end of compilation. It has been slightly edited from the default RISC-V linker script to accommodate changes in the address space in the CV32E40P.
+It is used to place the C Runtime start up code at the correct address. 
+When this linker script is not used GCC makes incorrect assumptions about where to put the boot code. Often it will assume the program is being built to run on top of Linux and place the boot code accordingly.   
+
+### Usage 
+Below is an example taken from the core-v-verif repo of how the above files should be used during the build process:  
+```
+gcc test-program.o extra1.o extra2.o \
+     -nostartfiles -T/path/to/link/link.ld -L/path/to/cv-verif/ -lcv-verif
+```
+
+The `-nostartfiles` flag tells GCC not to include the default C Runtime boot code.  
+The `-T` option allows a user to specify the linker script used.  
+The `-L` option is used to tell GCC where to look for library files and the `-l` option is used to indicate an archive file to link into the project. 
+
+These extra options are only required when linking. Object files can be produced without these options. 
+
+### Compiling and Linking Options
+On top of the options discussed in [Usage](#usage), other compilation and linking options are required to get code running bare-metal.  
+Below is an excerpt from the makefile in the helloworld sub-directory.
+It shows the options used to compile each object files (`RV_COMPILER_OPTIONS`) and the compiler options used in the final linking stage (`RV_LINKING_OPTIONS`). 
+The linking options are largely the same as the compilation options with the `-nostartfiles` flag added to the end. 
+
+```make
+RV_COMPILER_OPTIONS = -Os -g -static -mabi=ilp32 -march=rv32imc -Wall -pedantic 
+RV_LINKING_OPTIONS = ${RV_COMPILER_OPTIONS} -nostartfiles
+```
+
+
