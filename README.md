@@ -1,6 +1,6 @@
 # Basic RISC-V Test Programs
 
-This repository contains programs that can be used to verify toolchain configuration for compiling bare-metal programs for the CV32E40P RISC-V reference core.
+This repository contains programs used to demonstrate the compilation of bare-metal programs for the CV32E40P RISC-V reference core in preparation for compiling the existing tinyMLperf benchmarking suite.
 
 ## Prerequisites
 ### Toolchain
