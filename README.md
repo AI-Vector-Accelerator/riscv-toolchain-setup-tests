@@ -16,8 +16,6 @@ Part of this verification process is exercising a Verilator model of the process
 This Verilator model can be initialized with an arbitrary hex file loaded into memory. 
 This model is used to run the example programs.
 
-To increase the speed of the model go to the file `./core-v-verif/cv32/tb/core/tb_top_verilator.cpp` and remove the call to `dump_memory();` in `main()`. This will stop the simulator dumping its memory before it has run any code, dramatically reducing the time needed to start the simulation. 
-
 Run the commands below to generate the Verilator model of the CV32E40P.
 
 ```bash
@@ -32,6 +30,8 @@ Add the simulator to your PATH for easy access elsewhere in your system making s
 echo export CV32SIM=/path/to/core-v-verif/cv32/sim/core >> ~/.profile
 echo export PATH=$PATH:$CV32SIM >> ~/.profile
 ```
+
+To increase the speed of the model go to the file `./core-v-verif/cv32/tb/core/tb_top_verilator.cpp` and remove the call to `dump_memory();` in `main()` and rebuld the simulator. This will stop the simulator dumping its memory before it has run any code, dramatically reducing the time needed to start the simulation. 
 
 ## Running the Programs
 The test programs are stored in sub-directories. To run a program navigate to its sub-directory and call `make all` to build the hex file of the program and run it on the Verilog model. 
