@@ -10,6 +10,12 @@ The scripts in this directory have been tested on a fresh WSL 2 Ubuntu VM run in
 2. sudo install-spike.sh
 3. sudo install-pk.sh  
 
+They can be run by:
+
+```bash
+sudo ./install-riscv-gcc.sh 
+```
+
 These scripts will install the GNU RISC-V toolchain will be installed into the standard location (/opt/riscv).
 
 <b>Be warned:</b> The RISCV GNU Toolchain has a huge codebase distributed over many repositories. It will take a lot of time and compute effort to collect and build. During testing the WSL 2 process used up to 11 GB of RAM. It is recommended that you close any non-essential processes before starting the script.
