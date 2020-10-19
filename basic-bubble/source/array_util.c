@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "../headers/array_util.h"
@@ -8,7 +9,7 @@ void fillArrayRandom(int* array, const int size)
     int i;
 
     printf("Filling an array..");
-    srand(34533453);
+    srand((unsigned) time(NULL));
     for(i=0; i<size; i++)
     {
         array[i] = rand() % 1000;
