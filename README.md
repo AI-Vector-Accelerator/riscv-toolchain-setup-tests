@@ -4,11 +4,7 @@ This repository contains programs used to demonstrate the compilation of bare-me
 
 ## Prerequisites
 ### Toolchain
-The PULP-Platform RISC-V GCC compiler is recommended for use with this core.
-The toolchain can be installed by following the instructions linked below:  
-https://github.com/openhwgroup/core-v-verif/blob/master/cv32/sim/TOOLCHAIN.md  
-
-Other RISC-V toolchains may work but they have not been tested. 
+The Vanilla GNU Toolchain was used for this project. For details about the installation process and shell scripts to complete the process automatically go to toolchain-setup and read the [README](toolchain-setup/README.md).
 
 ### Simulator
 The CV32E40P is currently undergoing verification in preparation for tape-out.
