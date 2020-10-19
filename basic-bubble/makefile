@@ -41,4 +41,5 @@ run:
 .PHONY : clean
 clean:
 	-rm ${OBJ_FILES}
+	-rm *.hex *.elf
 
