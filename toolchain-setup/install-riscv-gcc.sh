@@ -7,7 +7,6 @@ export RISCV=/opt/riscv
 export PATH=$PATH:$RISCV/bin
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-VERSION="a03290eab661e2aa58288ad164f908bbbcc2169c"
 
 sudo apt install git autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev -y
 
@@ -29,7 +28,6 @@ if ! [ -e $RISCV/bin ]; then
     cd riscv-gnu-toolchain
     git submodule init
     git submodule update --init --recursive --progress
-    git checkout $VERSION
 
 # End Pull Stage 
 
