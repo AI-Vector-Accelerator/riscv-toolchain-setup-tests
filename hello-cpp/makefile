@@ -1,10 +1,11 @@
-RV_COMPILER_OPTIONS = -Os -g -static -mabi=ilp32 -march=rv32imc -Wall -pedantic -fno-use-cxa-atexit --verbose
-RV_LINKING_OPTIONS = ${RV_COMPILER_OPTIONS} -static -fno-use-cxa-atexit --verbose
+RV_COMPILER_OPTIONS = -Os -g -static -mabi=ilp32 -march=rv32imc -Wall -pedantic
+RV_LINKING_OPTIONS = ${RV_COMPILER_OPTIONS} -static -nostartfiles ${LIB_DIR}crtbegin.o
 
 LINKER_SCRIPT = ./lib/link.ld
 LIB_DIR = ./lib/
 
-SOURCE_FILES = $(wildcard source/*.c) $(wildcard source/*.cpp)
+SOURCE_FILES = $(wildcard source/*.c)
+SOURCE_FILES += $(wildcard source/*.cpp)
 HEADER_FILES = $(wildcard header/*.h)
 OBJ_FILES = $(SOURCE_FILES:source/%.c=build/%.o) $(SOURCE_FILES:source/%.cpp=build/%.o)
 
