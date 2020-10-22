@@ -15,6 +15,7 @@ This model is used to run the example programs.
 Run the commands below to generate the Verilator model of the CV32E40P.
 
 ```bash
+sudo apt install verilator
 git clone https://github.com/openhwgroup/core-v-verif.git
 cd ./core-v-verif/cv32/sim/core
 make    # Clone the CV32E40P, build the Verilator model, run a bare-metal hello-world example
