@@ -34,7 +34,7 @@ if ! [ -e $RISCV/bin ]; then
 # Start Compilation Stage
     if [[ $1 -ne "0" || -z ${1} ]]; then
       echo "Compiling RISC-V Toolchain"
-      ./configure --disable-linux --disable-multilib --disable-gdb --prefix=$RISCV --with-arch=rv32gc --with-abi=ilp32
+      ./configure --disable-linux --disable-multilib --disable-gdb --prefix=$RISCV --with-arch=rv32mc --with-abi=ilp32
       make -j${NUM_JOBS}
       echo "Compilation Finished"
     fi
