@@ -24,8 +24,34 @@ make    # Clone the CV32E40P, build the Verilator model, run a bare-metal hello-
 Add the simulator to your PATH for easy access elsewhere in your system making sure you replace `/path/to` in the first statement with the full path to the core-v-verif repo.
 
 ```bash
-echo export CV32SIM=/path/to/core-v-verif/cv32/sim/core >> ~/.profile
-echo export PATH=$PATH:$CV32SIM >> ~/.profile
+export CV32SIM=/path/to/core-v-verif/cv32/sim/core
+export PATH=$PATH:$CV32SIM
+```
+
+However this change will be undone when you close your terminal. To make the change permanent you must add the commends above to your `~/.profile` file.
+Open the file with the command:
+```bash
+nano ~/.profile
+```
+Copy and paste the export commands above to the bottom of the file, remembering to replace `/path/to/core-v-verif/` with the full path to the core-v-verif repo.  
+With both the simulator and toolchain on your path, the bottom of your `~/.profile` file should now look something like this:
+```bash
+...
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+export RISCV=/opt/riscv
+export PATH=$PATH:$RISCV/bin
+
+export CV32SIM=/path/to/core-v-verif/cv32/sim/core
+export PATH=$PATH:$CV32SIM
 ```
 
 To increase the speed of the model go to the file `./core-v-verif/cv32/tb/core/tb_top_verilator.cpp` and remove the call to `dump_memory();` in `main()` and rebuld the simulator. This will stop the simulator dumping its memory before it has run any code, dramatically reducing the time needed to start the simulation. 
@@ -38,8 +64,10 @@ The build system used in these example programs is the same as is used to compil
 Details on this build system can be found here:
 https://github.com/openhwgroup/core-v-verif/tree/master/cv32/bsp#building-and-using-the-bsp-library
 
-In each program sub-directory there is a lib directory.
+In each C program sub-directory there is a lib directory.
 This directory contains the files `libcv-verif.a` and `link.ld`.
+
+In each C++ program lib directory there is also a file called crtbegin.o.
 
 ### libcv-verif.a
 This archive file contains bare-metal implementations of essential functions usually provided by the OS. 
@@ -48,23 +76,37 @@ It includes a port of the C Runtime (crt0.S), a port of syscalls that does not r
 The syscall port is pretty bare-bones, the lack of an OS means the best many of the syscall functions can do is fail gracefully (e.g: file handling). 
 Initial experimentation showed that the toolchain can sometimes try to add two different versions of syscalls if standard C functions are called from libraries other than stdio.h or stdlib.h, e.g: time.h.
 
-TODO: Investigate recompiling `libcv-verif.a` without the proprietary syscalls and letting GCC link in the default version. 
-
 ### link.ld
 This is the linker script used to arrange the sections correctly in the ELF and HEX files produced at the end of compilation. It has been slightly edited from the default RISC-V linker script to accommodate changes in the address space in the CV32E40P.
 It is used to place the C Runtime start up code at the correct address. 
-When this linker script is not used GCC makes incorrect assumptions about where to put the boot code. Often it will assume the program is being built to run on top of Linux and place the boot code accordingly.   
+When this linker script is not used GCC makes incorrect assumptions about where to put the boot code. Often it will assume the program is being built to run on top of Linux and place the boot code accordingly.
+
+### crtbegin.o
+This file contains for handling constructors for C++ objects, hence why it is not needed for a C environment. 
+This file is usually linked with the other start files by GCC. 
+However, in order to use the custom C Runtime and syscalls discussed above, we have removed all default start files, hence, we link this file manually.  
+If the linker ever starts complaining that it can't find a symbol called `__dso_handle` make sure this file is being linked properly.
 
 ### Usage 
 Below is an example taken from the core-v-verif repo of how the above files should be used during the build process:  
-```sh
+
+#### C
+```
 gcc test-program.o extra1.o extra2.o \
      -nostartfiles -T/path/to/link/link.ld -L/path/to/cv-verif/ -lcv-verif
 ```
 
-The `-nostartfiles` flag tells GCC not to include the default C Runtime boot code.  
-The `-T` option allows a user to specify the linker script used.  
-The `-L` option is used to tell GCC where to look for library files and the `-l` option is used to indicate an archive file to link into the project. 
+#### C++
+```
+g++ test-program.o extra1.o extra2.o \
+     -nostartfiles -T/path/to/link/link.ld -L/path/to/cv-verif/ -lcv-verif ./crtbegin.o
+```
+
+
+* The `-nostartfiles` flag tells GCC not to include the default C Runtime boot code.  
+* The `-T` option allows a user to specify the linker script used.  
+* The `-L` option is used to tell GCC where to look for library files and the `-l` option is used to indicate an archive file to link into the project.  
+* The inclusion of `./crtbegin.o` here tells GCC to link this file alongside the contents of `libcv-verif.a` at the final linking stage. It is assumed that this file is in the directory that G++ is being called from.
 
 These extra options are only required when linking. Object files can be produced without these options. 
 

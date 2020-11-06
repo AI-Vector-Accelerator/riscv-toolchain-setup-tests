@@ -24,13 +24,33 @@ At the end of the installation process the process still had claim over ~10 GB e
 
 ## Setting Up PATH
 
-To use the toolchain from anywhere in your filesystem you must add `/opt/riscv/bin` to your PATH environment variable. This will tell bash to look in this directory whenever you enter a command into the terminal. You can do this for your current session by running the following command:
+To use the toolchain from anywhere in your filesystem you must add `/opt/riscv/bin` to your PATH environment variable. This will tell bash to look in this directory whenever you enter a command into the terminal. You can do this for your current session by running the following commands:
 
 ```bash
-export PATH=$PATH:/opt/riscv/bin
+export RISCV=/opt/riscv
+export PATH=$PATH:$RISCV/bin
 ```
 
-However this change will be undone when you close your terminal. To make the change permanent add this command to the bottom of the file `~/.profile`:
+However this change will be undone when you close your terminal. To make the change permanent you must add the commends above to your `~/.profile` file.
+Open the file with the command:
 ```bash
-echo export PATH=$PATH:/opt/riscv/bin >> ~/.profile
+nano ~/.profile
 ```
+Copy and paste the export commands above to the bottom of the file.  
+The bottom of your `~/.profile` file should now look something like this:
+```bash
+...
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+export RISCV=/opt/riscv
+export PATH=$PATH:$RISCV/bin
+```
+
