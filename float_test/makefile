@@ -1,5 +1,5 @@
 RV_COMPILER_OPTIONS = -Os -g -static -mabi=ilp32 -march=rv32imc -Wall -pedantic
-RV_LINKING_OPTIONS = ${RV_COMPILER_OPTIONS} -static -nostartfiles ${LIB_DIR}crtbegin.o --specs=nano.specs
+RV_LINKING_OPTIONS = ${RV_COMPILER_OPTIONS} -static -nostartfiles ${LIB_DIR}crtbegin.o --specs=nano.specs -u _printf_float
 
 LINKER_SCRIPT = ./lib/link.ld
 LIB_DIR = ./lib/
