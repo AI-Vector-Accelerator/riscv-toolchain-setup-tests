@@ -1,5 +1,9 @@
 RV_COMPILER_OPTIONS = -Os -g -static -mabi=ilp32 -march=rv32imc -Wall -pedantic
 RV_LINKING_OPTIONS = ${RV_COMPILER_OPTIONS} -static -nostartfiles ${LIB_DIR}crtbegin.o
+RV_LINKING_OPTIONS_SPIKE = ${RV_COMPILER_OPTIONS} -static
+
+SPIKE_SIM_FLAGS= --isa=RV32IMC
+PK_DIR=/opt/riscv/riscv32-unknown-elf/bin
 
 LINKER_SCRIPT = ./lib/link.ld
 LIB_DIR = ./lib/
@@ -17,21 +21,19 @@ CC = ${TC_PREFIX}gcc
 CXX= ${TC_PREFIX}g++
 OBJCOPY = ${TC_PREFIX}objcopy
 
-SPIKE_OPTIONS = --isa=RV32GC
 
-build/Suduko_Solver-riscv.hex: build/Suduko_Solver-riscv.elf 
+
+Suduko_Solver-riscv.hex: Suduko_Solver-riscv.elf 
 	${OBJCOPY} -O verilog Suduko_Solver-riscv.elf Suduko_Solver-riscv.hex 
 
-build/Suduko_Solver-riscv.elf: ${OBJ_FILES} ${HEADER_FILES}
+Suduko_Solver-riscv.elf: ${OBJ_FILES} ${HEADER_FILES}
 	${CXX} ${RV_LINKING_OPTIONS} -o Suduko_Solver-riscv.elf -I./header \
 		-L ${LIB_DIR} -lcv-verif -T ${LINKER_SCRIPT} ${OBJ_FILES} 
 
-build/%.o : source/%.cpp
-	${CXX} ${RV_COMPILER_OPTIONS} -I./header -c -o $@ $< 
-
-build/%.o : source/%.c
-	${CC} ${RV_COMPILER_OPTIONS} -I./header -c -o $@ $< 
-
+Suduko_Solver-riscv_spike.elf: ${OBJ_FILES} ${HEADER_FILES}
+	${CXX} ${RV_LINKING_OPTIONS_spike} -o Suduko_Solver-riscv_spike.elf -I./header \
+		-L ${LIB_DIR} -lcv-verif -T ${LINKER_SCRIPT} ${OBJ_FILES} 
+		
 %.o : %.cpp
 	${CXX} ${RV_COMPILER_OPTIONS} -I./header -c -o $@ $<
 
@@ -46,9 +48,10 @@ build/%.o : source/%.c
 
 .PHONY : all
 all:
-	-rm Suduko_Solver.o
+	rm -f Suduko_Solver.o
 	make
 	make run
+	make spike
 
 .PHONY : run
 run: 
@@ -56,5 +59,10 @@ run:
 
 .PHONY : clean
 clean:
-	-rm Suduko_Solver-riscv.hex Suduko_Solver-riscv.elf
-	-rm ${OBJ_FILES}
+	-rm -f Suduko_Solver-riscv.hex Suduko_Solver-riscv.elf Suduko_Solver-riscv_spike.elf
+	-rm -f ${OBJ_FILES}
+
+.PHONY : spike
+spike: Suduko_Solver-riscv_spike.elf
+	spike  $(SPIKE_SIM_FLAGS) $(flags) $(PK_DIR)/pk Suduko_Solver-riscv_spike.elf
+	
