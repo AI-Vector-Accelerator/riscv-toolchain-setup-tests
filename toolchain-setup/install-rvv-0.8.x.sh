@@ -14,5 +14,7 @@ git clone -b rvv-0.8.x https://github.com/riscv/riscv-gnu-toolchain
 cd riscv-gnu-toolchain
 git submodule update --init --recursive
 
+echo "Compiling RISC-V vector extension 0.8 Toolchain"
 ./configure --disable-linux --disable-multilib --disable-gdb --prefix=$RISCV --with-arch=rv32imc --with-abi=ilp32
-make
+make -j16
+echo "Compilation Finished"
