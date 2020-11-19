@@ -52,5 +52,8 @@ fi
 
 export RISCV=/opt/riscv
 export PATH=$PATH:$RISCV/bin
+
+export CV32SIM=/opt/core-v-verif/cv32/sim/core
+export PATH=$PATH:$CV32SIM
 ```
 
