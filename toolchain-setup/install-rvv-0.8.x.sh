@@ -12,7 +12,7 @@ cd $RISCV
 
 git clone -b rvv-0.8.x https://github.com/riscv/riscv-gnu-toolchain
 cd riscv-gnu-toolchain
-git submodule update --init --recursive
+git submodule update --init --recursive --progress
 
 # Checkout less broken version of newlib
 cd riscv-newlib
