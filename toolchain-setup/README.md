@@ -29,6 +29,9 @@ To use the toolchain from anywhere in your filesystem you must add `/opt/riscv/b
 ```bash
 export RISCV=/opt/riscv
 export PATH=$PATH:$RISCV/bin
+export CV32SIM=/opt/core-v-verif/cv32/sim/core
+export PATH=$PATH:$CV32SIM
+
 ```
 
 However this change will be undone when you close your terminal. To make the change permanent you must add the commends above to your `~/.profile` file.
@@ -52,5 +55,8 @@ fi
 
 export RISCV=/opt/riscv
 export PATH=$PATH:$RISCV/bin
+
+export CV32SIM=/opt/core-v-verif/cv32/sim/core
+export PATH=$PATH:$CV32SIM
 ```
 
