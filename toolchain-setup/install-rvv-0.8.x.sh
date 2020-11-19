@@ -13,7 +13,7 @@ echo "Starting cloning stage"
 
 git clone -b rvv-0.8.x https://github.com/riscv/riscv-gnu-toolchain
 cd riscv-gnu-toolchain
-git submodule update --init --recursive --progress
+git submodule update --init --recursive --progress --jobs=16
 
 echo "Finished cloning stage"
 
