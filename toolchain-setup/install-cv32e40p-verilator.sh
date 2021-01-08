@@ -1,9 +1,9 @@
 #!/bin/bash
 
-export CV32SIM=/opt/core-v-verif/cv32/sim/core
+export CV32SIM=$HOME/core-v-verif/cv32/sim/core
 export PATH=$PATH:$CV32SIM
 
-cd /opt
+cd $HOME
 
 sudo apt install verilator
 git clone https://github.com/openhwgroup/core-v-verif.git
