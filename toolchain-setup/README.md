@@ -29,7 +29,7 @@ To use the toolchain from anywhere in your filesystem you must add `/opt/riscv/b
 ```bash
 export RISCV=/opt/riscv
 export PATH=$PATH:$RISCV/bin
-export CV32SIM=/opt/core-v-verif/cv32/sim/core
+export CV32SIM=/$HOME/core-v-verif/cv32/sim/core
 export PATH=$PATH:$CV32SIM
 
 ```
@@ -56,7 +56,7 @@ fi
 export RISCV=/opt/riscv
 export PATH=$PATH:$RISCV/bin
 
-export CV32SIM=/opt/core-v-verif/cv32/sim/core
+export CV32SIM=/$HOME/core-v-verif/cv32/sim/core
 export PATH=$PATH:$CV32SIM
 ```
 
