@@ -6,13 +6,14 @@ This repository contains programs used to demonstrate the compilation of bare-me
 ### Toolchain
 The Vanilla GNU Toolchain was used for this project. For details about the installation process and shell scripts to complete the process automatically go to toolchain-setup and read the [README](toolchain-setup/README.md).
 
-### Simulator
+### Verilator Model
 The CV32E40P is currently undergoing verification in preparation for tape-out.
 Part of this verification process is exercising a Verilator model of the processor.
 This Verilator model can be initialized with an arbitrary hex file loaded into memory. 
 This model is used to run the example programs.
 
-Run the commands below to generate the Verilator model of the CV32E40P.
+Run the commands below to generate the Verilator model of the Standard CV32E40P.
+For instructions on installing the model for the verilator model for the Accelerated CV32E40P please the repository [core-v-verif-ava](https://github.com/AI-Vector-Accelerator/core-v-verif-ava)
 
 ```bash
 sudo apt install verilator
@@ -21,20 +22,20 @@ cd ./core-v-verif/cv32/sim/core
 make    # Clone the CV32E40P, build the Verilator model, run a bare-metal hello-world example
 ```
 
-Add the simulator to your PATH for easy access elsewhere in your system making sure you replace `/path/to` in the first statement with the full path to the core-v-verif repo.
+Add the verilator model to your PATH for easy access elsewhere in your system making sure you replace `/path/to` in the first statement with the full path to the core-v-verif repo.
 
 ```bash
 export CV32SIM=/path/to/core-v-verif/cv32/sim/core
 export PATH=$PATH:$CV32SIM
 ```
 
-However this change will be undone when you close your terminal. To make the change permanent you must add the commends above to your `~/.profile` file.
+However this change will be undone when you close your terminal. To make the change permanent you must add the commands above to your `~/.profile` file.
 Open the file with the command:
 ```bash
 nano ~/.profile
 ```
 Copy and paste the export commands above to the bottom of the file, remembering to replace `/path/to/core-v-verif/` with the full path to the core-v-verif repo.  
-With both the simulator and toolchain on your path, the bottom of your `~/.profile` file should now look something like this:
+With both the verilator model and toolchain on your path, the bottom of your `~/.profile` file should now look something like this:
 ```bash
 ...
 # set PATH so it includes user's private bin if it exists
@@ -53,8 +54,6 @@ export PATH=$PATH:$RISCV/bin
 export CV32SIM=/path/to/core-v-verif/cv32/sim/core
 export PATH=$PATH:$CV32SIM
 ```
-
-To increase the speed of the model go to the file `./core-v-verif/cv32/tb/core/tb_top_verilator.cpp` and remove the call to `dump_memory();` in `main()` and rebuld the simulator. This will stop the simulator dumping its memory before it has run any code, dramatically reducing the time needed to start the simulation. 
 
 ## Running the Programs
 The test programs are stored in sub-directories. To run a program navigate to its sub-directory and call `make all` to build the hex file of the program and run it on the Verilog model. 
